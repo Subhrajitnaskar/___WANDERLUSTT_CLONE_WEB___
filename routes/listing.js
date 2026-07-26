@@ -73,7 +73,7 @@ router.post(
     // }
 
     await newListing.save();
-
+    req.flash("success", "New Listing Created Successfully!");
     res.redirect("/listings");
   })
 );
