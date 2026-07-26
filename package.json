@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Subhrajitnaskar/___ROOMBOOKING_WEB___#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "ejs": "^6.0.1",
     "ejs-mate": "^4.0.0",
     "express": "^4.21.2",
