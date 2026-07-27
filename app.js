@@ -34,10 +34,8 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
-
-
 const sessionOptions = {
-  secret: "my",
+  secret: "mysupersecretcode",
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -47,19 +45,23 @@ const sessionOptions = {
   },
 };
 
-// Home Route
-app.get("/", (req, res) => {
-  res.send("Hi, I am Root");
-});
-
 app.use(session(sessionOptions));
 app.use(flash());
 
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  // console.log(res.locals.success);
   next();
 });
+
+// Home Route
+app.get("/", (req, res) => {
+  res.send("Hi, I am Root");
+});
+
+app.use("/listings", listings);
+app.use("/listings/:id/reviews", reviews);
 
 // // Validate Listing
 // const validateListing = (req, res, next) => {
@@ -95,9 +97,6 @@ app.use((req, res, next) => {
 // app.get("/", (req, res) => {
 //   res.send("Hi, I am Root");
 // });
-
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
 
 // // Index Route
 // app.get(
@@ -226,10 +225,11 @@ app.use("/listings/:id/reviews", reviews);
 //   wrapAsync(async (req, res) => {
 //     let { id, reviewId } = req.params;
 
-//     await Listing.findByIdAndUpdate(id, { $pull: {reviews: reviewId }});
+//     await Listing.findByIdAndUpdate(id, {
+//       $pull: { reviews: reviewId },
+//     });
+
 //     await Review.findByIdAndDelete(reviewId);
-
-
 
 //     res.redirect(`/listings/${id}`);
 //   })

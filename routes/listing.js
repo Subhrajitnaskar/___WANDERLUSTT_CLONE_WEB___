@@ -42,6 +42,10 @@ router.get(
 
     const listing = await Listing.findById(id).populate("reviews");
 
+    if (!listing) {
+      req.flash("error", "Listing you requestde for does not exist!");
+      return res.redirect("/listings");
+    }
     res.render("listings/show", { listing });
   })
 );
@@ -105,6 +109,7 @@ router.put(
       ...req.body.listing,
     });
 
+    req.flash("success", "Listing Updated!");
     res.redirect(`/listings/${id}`);
   })
 );
@@ -117,6 +122,7 @@ router.delete(
 
     await Listing.findByIdAndDelete(id);
 
+    req.flash("success", "Listing Deleted!");
     res.redirect("/listings");
   })
 );
