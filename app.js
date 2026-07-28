@@ -84,6 +84,7 @@ app.get("/demouser", async (req, res) => {
 
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
 
 // // Validate Listing
 // const validateListing = (req, res, next) => {
