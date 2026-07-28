@@ -89,6 +89,11 @@ router.get(
     const { id } = req.params;
 
     const listing = await Listing.findById(id);
+    
+    if (!listing) {
+      req.flash("error", "Listing you requestde for does not exist!");
+      return res.redirect("/listings");
+    }
 
     res.render("listings/edit", { listing });
   })
