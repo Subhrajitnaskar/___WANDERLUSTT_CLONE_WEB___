@@ -1,4 +1,8 @@
 const Listing = require("./models/listing");
+const Review = require("./models/review");
+const ExpressError = require("./utils/ExpressError.js");
+const { listingSchema, reviewSchema } = require("./schema.js");
+
 
 module.exports.isLoggedIn = (req, res, next) => {
   // console.log(req.user);
@@ -21,7 +25,49 @@ module.exports.isOwner = async (req, res, next) => {
   const { id } = req.params;
     let listing = await Listing.findById(id);
     if(!listing.owner._id.equals(res.locals.currUser._id)) {
-      req.flash("error", "you don't have permission to edit");
+      req.flash("error", "you are not the owner of this listing");
       return res.redirect(`/listings/${id}`);
     }
-}
+
+    next();
+};
+
+// Validate Listing
+module.exports.validateListing = (req, res, next) => {
+  let result = listingSchema.validate(req.body);
+  console.log(result);
+
+  let { error } = result;
+
+  if (error) {
+    let errMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errMsg);
+  } else {
+    next();
+  }
+};
+
+// Validate Review
+module.exports.validateReview = (req, res, next) => {
+    let result = reviewSchema.validate(req.body);
+
+    let { error } = result;
+
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    }
+
+    next();
+};
+
+module.exports.isreviewAuthor = async (req, res, next) => {
+  const { id, reviewId } = req.params;
+    let review = await Review.findById(reviewId);
+    if(!review.author._id.equals(res.locals.currUser._id)) {
+      req.flash("error", "you are not the author of this review");
+      return res.redirect(`/listings/${id}`);
+    }
+
+    next();
+};
