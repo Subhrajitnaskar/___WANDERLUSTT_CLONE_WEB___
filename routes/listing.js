@@ -4,52 +4,66 @@ const wrapAsync = require("../utils/wrapAsync.js");
 // const { listingSchema } = require("../schema.js");
 // const ExpressError = require("../utils/ExpressError.js");
 const Listing = require("../models/listing.js");
-const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
+const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
 
 const listngController = require("../controllers/listings.js");
-const multer  = require('multer');
-const {storage} = require("../cloudConfig.js");
+
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
 
 router
-.route("/")
- .get(
-   wrapAsync(listngController.index)
+  .route("/")
+  .get(
+    wrapAsync(listngController.index)
   )
-//  .post(
-//    isLoggedIn,
-//    validateListing,
-//    wrapAsync(listngController.createListing)
-//   );
-.post(
+  .post(
     isLoggedIn,
     upload.single("listing[image]"),
     validateListing,
     wrapAsync(listngController.createListing)
-);
-
-  // New Route
-router.get("/new", isLoggedIn, listngController.renderNewFrom);
-
-router
-.route("/:id")
- .get(
-   wrapAsync(listngController.showListing)
-  )
- .put(
-   isLoggedIn,
-   isOwner,
-   upload.single("listing[image]"),
-   validateListing,
-   wrapAsync(listngController.updateListing)
-  )
- .delete(
-   isLoggedIn,
-   isOwner,
-   wrapAsync(listngController.destroyListing)
   );
 
+// New Route
+router.get(
+  "/new",
+  isLoggedIn,
+  listngController.renderNewFrom
+);
 
+// Search Route
+router.get(
+  "/search",
+  wrapAsync(listngController.searchListing)
+);
+
+router
+  .route("/:id")
+  .get(
+    wrapAsync(listngController.showListing)
+  )
+  .put(
+    isLoggedIn,
+    isOwner,
+    upload.single("listing[image]"),
+    validateListing,
+    wrapAsync(listngController.updateListing)
+  )
+  .delete(
+    isLoggedIn,
+    isOwner,
+    wrapAsync(listngController.destroyListing)
+  );
+
+// Edit Route
+router.get(
+  "/:id/edit",
+  isLoggedIn,
+  isOwner,
+  wrapAsync(listngController.renderEditFrom)
+);
+
+module.exports = router;
 
 // // Index Route
 // router.get(
@@ -75,12 +89,12 @@ router
 // );
 
 // Edit Route
-router.get(
-  "/:id/edit",
-  isLoggedIn,
-  isOwner,
-  wrapAsync(listngController.renderEditFrom)
-);
+// router.get(
+//   "/:id/edit",
+//   isLoggedIn,
+//   isOwner,
+//   wrapAsync(listngController.renderEditFrom)
+// );
 
 // // Update Route
 // router.put(
@@ -99,7 +113,7 @@ router.get(
 //   wrapAsync(listngController.destroyListing)
 // );
 
-module.exports = router;
+// module.exports = router;
 
 
 // Validate Listing

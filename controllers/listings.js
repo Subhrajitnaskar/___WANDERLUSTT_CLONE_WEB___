@@ -86,3 +86,19 @@ module.exports.destroyListing = async (req, res) => {
   req.flash("success", "Listing Deleted!");
   res.redirect("/listings");
 } 
+
+module.exports.searchListing = async (req,res)=>{
+
+    const country = req.query.country.trim();
+
+    const allListings = await Listing.find({
+        country: { $regex: country, $options:"i" }
+    });
+
+    if(allListings.length === 0){
+        req.flash("error","No listings found!");
+        return res.redirect("/listings");
+    }
+
+    res.render("listings/index",{allListings});
+}
