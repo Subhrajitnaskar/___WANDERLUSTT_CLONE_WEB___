@@ -56,9 +56,9 @@ const sessionOptions = {
 };
 
 // Home Route
-app.get("/", (req, res) => {
-  res.send("Hi, I am Root");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi, I am Root");
+// });
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -73,7 +73,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;   // 
+  res.locals.currUser = req.user;   
   next();
 });
 
